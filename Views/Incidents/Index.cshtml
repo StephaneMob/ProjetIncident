@@ -1,0 +1,151 @@
+@model List<CICertSOAR.Models.Incident>
+
+@{
+    ViewData["Title"] = "Gestion des Incidents RTIR";
+    var sectors = ViewBag.Sectors as List<CICertSOAR.Models.Sector> ?? new();
+    var ministries = ViewBag.Ministries as List<CICertSOAR.Models.Ministry> ?? new();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 mb-1 fw-bold text-dark"><i class="bi bi-shield-exclamation text-primary me-2"></i>Registre des Incidents RTIR</h1>
+        <p class="text-muted mb-0">Corrélation automatique ELK / IntelMQ et suivi d'orchestration de la réponse aux incidents</p>
+    </div>
+</div>
+
+<!-- Filter Card -->
+<div class="filter-card">
+    <form method="get" asp-controller="Incidents" asp-action="Index" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Recherche Globale</label>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Ticket RTIR, IP, Actif, CVE..." value="@ViewBag.Search" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Statut</label>
+            <select name="status" class="form-select form-select-sm">
+                <option value="">Tous les statuts</option>
+                <option value="Détecté" selected="@(ViewBag.SelectedStatus == "Détecté")">Détecté</option>
+                <option value="Qualifié" selected="@(ViewBag.SelectedStatus == "Qualifié")">Qualifié</option>
+                <option value="Notifié" selected="@(ViewBag.SelectedStatus == "Notifié")">Notifié</option>
+                <option value="Résolu" selected="@(ViewBag.SelectedStatus == "Résolu")">Résolu</option>
+                <option value="Clos" selected="@(ViewBag.SelectedStatus == "Clos")">Clos</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Sévérité</label>
+            <select name="severity" class="form-select form-select-sm">
+                <option value="">Toutes les sévérités</option>
+                <option value="Critique" selected="@(ViewBag.SelectedSeverity == "Critique")">Critique</option>
+                <option value="Haute" selected="@(ViewBag.SelectedSeverity == "Haute")">Haute</option>
+                <option value="Moyenne" selected="@(ViewBag.SelectedSeverity == "Moyenne")">Moyenne</option>
+                <option value="Basse" selected="@(ViewBag.SelectedSeverity == "Basse")">Basse</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Secteur</label>
+            <select name="sectorId" class="form-select form-select-sm">
+                <option value="">Tous les secteurs</option>
+                @foreach (var sec in sectors)
+                {
+                    <option value="@sec.Id" selected="@(ViewBag.SelectedSectorId == sec.Id)">@sec.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-sm btn-gov-primary w-100"><i class="bi bi-funnel me-1"></i> Filtrer</button>
+            <a asp-controller="Incidents" asp-action="Index" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i></a>
+        </div>
+    </form>
+</div>
+
+<!-- Main Table -->
+<div class="table-responsive">
+    <table class="table table-custom align-middle">
+        <thead>
+            <tr>
+                <th>Ticket RTIR</th>
+                <th>Date Détection</th>
+                <th>Actif Numérique</th>
+                <th>Organisme & Ministère</th>
+                <th>Vulnérabilité (CVE)</th>
+                <th>Sévérité</th>
+                <th>Statut</th>
+                <th class="text-end">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                        <i class="bi bi-info-circle fs-3 d-block mb-2"></i>
+                        Aucun incident correspondant aux critères de recherche.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var inc in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-dark">@inc.TicketNumber</div>
+                            <small class="text-muted">ID: #@inc.Id</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">@inc.DateDetected.ToString("dd/MM/yyyy")</div>
+                            <small class="text-muted">@inc.DateDetected.ToString("HH:mm")</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">@(inc.Asset?.Name ?? "N/A")</div>
+                            <div class="small text-muted"><i class="bi bi-hdd-network me-1"></i>@(inc.Asset?.IpAddress ?? "N/A")</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-primary">@(inc.Asset?.Organization?.Name ?? "N/A")</div>
+                            <div class="small text-muted">@(inc.Asset?.Organization?.Ministry?.Name ?? "N/A")</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-dark font-monospace mb-1">@(inc.Vulnerability?.CveId ?? "N/A")</span>
+                            <div class="small text-truncate" style="max-width: 220px;" title="@(inc.Vulnerability?.Title)">@(inc.Vulnerability?.Title ?? "N/A")</div>
+                        </td>
+                        <td>
+                            <span class="badge-severity @inc.Severity">@inc.Severity</span>
+                        </td>
+                        <td>
+                            <span class="badge-status @inc.Status">@inc.Status</span>
+                        </td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-sm btn-gov-outline" onclick="openIncidentDetails(@inc.Id)">
+                                <i class="bi bi-eye-fill me-1"></i> Détails
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Container for Details -->
+<div class="modal fade" id="incidentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" id="incidentModalContent">
+            <!-- Loaded dynamically via AJAX -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openIncidentDetails(id) {
+            $.get('@Url.Action("Details", "Incidents")/' + id, function (data) {
+                $('#incidentModalContent').html(data);
+                var modal = new bootstrap.Modal(document.getElementById('incidentModal'));
+                modal.show();
+            });
+        }
+    </script>
+}

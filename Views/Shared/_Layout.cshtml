@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CI-CERT SOAR & CMDB (Côte d'Ivoire)</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Top Institutional Banner -->
+    <div class="py-1 px-4 bg-dark text-white d-flex justify-content-between align-items-center small" style="font-size: 0.75rem; background-color: #090d16 !important;">
+        <div>
+            <span class="fw-bold text-uppercase" style="letter-spacing: 0.05em; color: #f97316;">République de Côte d'Ivoire</span> | Union – Discipline – Travail
+        </div>
+        <div>
+            <span class="badge bg-warning text-dark me-2">TLP: AMBER</span>
+            <span>Agence Nationale de la Sécurité des Systèmes d'Information (ANSSI)</span>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg gov-navbar py-3 sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand-logo" asp-controller="Home" asp-action="Index">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 36px; height: 36px; background: #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem;">
+                        CI
+                    </div>
+                    <div>
+                        <div class="lh-1">CI-CERT <span class="brand-badge ms-1">SOAR v2.6</span></div>
+                        <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 500;">Gestion des Actifs & Orchestration des Incidents</div>
+                    </div>
+                </div>
+            </a>
+            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-grid-1x2-fill me-1"></i> Tableau de Bord Exécutif
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom @(ViewContext.RouteData.Values["controller"]?.ToString() == "Incidents" ? "active" : "")" asp-controller="Incidents" asp-action="Index">
+                            <i class="bi bi-shield-exclamation me-1"></i> Incidents RTIR
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom @(ViewContext.RouteData.Values["controller"]?.ToString() == "Assets" ? "active" : "")" asp-controller="Assets" asp-action="Index">
+                            <i class="bi bi-server me-1"></i> Actifs Numériques (CMDB)
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Index">
+                            <i class="bi bi-file-earmark-bar-graph-fill me-1"></i> Reporting & Exports
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main role="main" class="pb-5 pt-4">
+        <div class="container-fluid px-4">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-white border-top text-center text-muted small">
+        <div class="container">
+            <span>CI-CERT &copy; @DateTime.Now.Year - Agence Nationale de la Sécurité des Systèmes d'Information (ANSSI) | Côte d'Ivoire</span>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

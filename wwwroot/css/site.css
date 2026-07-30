@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
+
+:root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    
+    --primary: #0f172a;       /* Dark navy header accent */
+    --primary-light: #1e293b;
+    --accent-blue: #0284c7;   /* Vibrant blue accent */
+    --accent-orange: #ea580c; /* CI Emblem Orange */
+    --accent-green: #16a34a;  /* CI Emblem Green */
+    
+    --severity-critical: #dc2626;
+    --severity-high: #ea580c;
+    --severity-medium: #d97706;
+    --severity-low: #2563eb;
+    
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Institutional Navbar */
+.gov-navbar {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.2);
+    border-bottom: 3px solid var(--accent-orange);
+}
+
+.navbar-brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.brand-badge {
+    background: var(--accent-orange);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.nav-link-custom {
+    color: #cbd5e1 !important;
+    font-weight: 600;
+    padding: 8px 16px !important;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* KPI Executive Cards */
+.kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+}
+
+.kpi-card.kpi-total::before { background: var(--accent-blue); }
+.kpi-card.kpi-untreated::before { background: var(--severity-critical); }
+.kpi-card.kpi-treated::before { background: var(--accent-green); }
+.kpi-card.kpi-rate::before { background: var(--accent-orange); }
+
+.kpi-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.kpi-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+/* Custom Table Design */
+.table-custom {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.table-custom th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 14px 16px;
+    border: none;
+}
+
+.table-custom td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.table-custom tr:hover {
+    background: #f8fafc;
+}
+
+/* Status Badges */
+.badge-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.badge-status.Detecte { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.badge-status.Qualifie { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+.badge-status.Notifie { background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; }
+.badge-status.Resolut, .badge-status.Resolu { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.badge-status.Clos { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+.badge-severity {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.badge-severity.Critique { background: #dc2626; color: #ffffff; }
+.badge-severity.Haute { background: #ea580c; color: #ffffff; }
+.badge-severity.Moyenne { background: #d97706; color: #ffffff; }
+.badge-severity.Basse { background: #2563eb; color: #ffffff; }
+
+/* Filter Container */
+.filter-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Action Buttons */
+.btn-gov-primary {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-gov-primary:hover {
+    background: #1e293b;
+    color: #ffffff;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-gov-outline {
+    background: transparent;
+    color: #0f172a;
+    border: 1.5px solid #0f172a;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-gov-outline:hover {
+    background: #0f172a;
+    color: #ffffff;
+}
+
+/* Modal Headers */
+.modal-header-gov {
+    background: #0f172a;
+    color: #ffffff;
+    border-bottom: 3px solid var(--accent-orange);
+}

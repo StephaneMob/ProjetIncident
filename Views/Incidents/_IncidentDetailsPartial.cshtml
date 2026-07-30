@@ -1,0 +1,178 @@
+@model CICertSOAR.Models.Incident
+
+<div class="modal-header modal-header-gov text-white py-3">
+    <h5 class="modal-header-title mb-0 fw-bold d-flex align-items-center gap-2">
+        <i class="bi bi-shield-exclamation text-warning fs-4"></i>
+        Fiche d'Incident RTIR : @Model.TicketNumber
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body p-4">
+    <!-- Header Summary Strip -->
+    <div class="p-3 mb-4 rounded-3 d-flex justify-content-between align-items-center" style="background-color: #f1f5f9; border: 1px solid #cbd5e1;">
+        <div>
+            <span class="text-muted small d-block">STATUT ACTUEL DU TICKET</span>
+            <span class="badge-status @Model.Status fs-6">@Model.Status</span>
+        </div>
+        <div>
+            <span class="text-muted small d-block">SÉVÉRITÉ QUALIFIÉE</span>
+            <span class="badge-severity @Model.Severity">@Model.Severity</span>
+        </div>
+        <div>
+            <span class="text-muted small d-block">SCORE VULNÉRABILITÉ</span>
+            <span class="badge bg-dark fs-6">CVSS @(Model.Vulnerability?.CvssScore ?? 0.0)</span>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Asset & Organization Details -->
+        <div class="col-md-6 border-end">
+            <h6 class="fw-bold text-uppercase text-secondary small border-bottom pb-2 mb-3">
+                <i class="bi bi-server me-1"></i> Actif & Rattachement Institutionnel
+            </h6>
+            <table class="table table-sm table-borderless small mb-0">
+                <tr>
+                    <td class="text-muted fw-bold" style="width: 140px;">Actif Rattaché :</td>
+                    <td class="fw-bold text-dark">@(Model.Asset?.Name ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Adresse IP :</td>
+                    <td><code class="bg-light px-2 py-1 rounded">@(Model.Asset?.IpAddress ?? "N/A")</code></td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Domaine :</td>
+                    <td>@(Model.Asset?.Domain ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Type d'Actif :</td>
+                    <td><span class="badge bg-light text-dark border">@(Model.Asset?.Type ?? "N/A")</span></td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Organisation :</td>
+                    <td class="fw-bold text-primary">@(Model.Asset?.Organization?.Name ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Ministère :</td>
+                    <td>@(Model.Asset?.Organization?.Ministry?.Name ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Secteur d'Activité :</td>
+                    <td><span class="badge bg-secondary">@(Model.Asset?.Organization?.Ministry?.Sector?.Name ?? "N/A")</span></td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Contact RSSI :</td>
+                    <td>@(Model.Asset?.Organization?.ContactName ?? "N/A") (@(Model.Asset?.Organization?.ContactEmail ?? "N/A"))</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Vulnerability Technical Details -->
+        <div class="col-md-6">
+            <h6 class="fw-bold text-uppercase text-secondary small border-bottom pb-2 mb-3">
+                <i class="bi bi-bug-fill me-1"></i> Détails de la Vulnérabilité (CVE / OWASP)
+            </h6>
+            <table class="table table-sm table-borderless small mb-0">
+                <tr>
+                    <td class="text-muted fw-bold" style="width: 140px;">Référence CVE :</td>
+                    <td><span class="badge bg-dark fs-6">@(Model.Vulnerability?.CveId ?? "N/A")</span></td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Titre CVE :</td>
+                    <td class="fw-bold text-dark">@(Model.Vulnerability?.Title ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Catégorie OWASP :</td>
+                    <td><span class="badge bg-warning text-dark">@(Model.Vulnerability?.OwaspCategory ?? "N/A")</span></td>
+                </tr>
+                <tr>
+                    <td class="text-muted fw-bold">Description Faille :</td>
+                    <td class="text-secondary">@(Model.Vulnerability?.Description ?? "N/A")</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Complete Timeline Dates -->
+    <h6 class="fw-bold text-uppercase text-secondary small border-bottom pb-2 mb-3">
+        <i class="bi bi-clock-history me-1"></i> Horodatage & Chronologie Complète du Cycle de Vie
+    </h6>
+    <div class="row g-2 text-center mb-4 small">
+        <div class="col">
+            <div class="p-2 border rounded bg-light">
+                <div class="text-muted small">Enregistrement Actif</div>
+                <div class="fw-bold text-dark">@(Model.Asset?.DateRegistered.ToString("dd/MM/yyyy") ?? "-")</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="p-2 border rounded bg-light">
+                <div class="text-muted small">Détection Vulnérabilité</div>
+                <div class="fw-bold text-dark">@Model.DateDetected.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="p-2 border rounded bg-light">
+                <div class="text-muted small">Création Ticket RTIR</div>
+                <div class="fw-bold text-dark">@Model.DateTicketCreated.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="p-2 border rounded bg-light">
+                <div class="text-muted small">Notification Courriel</div>
+                <div class="fw-bold text-dark">@(Model.DateEmailSent.HasValue ? Model.DateEmailSent.Value.ToString("dd/MM/yyyy HH:mm") : "-")</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="p-2 border rounded bg-light">
+                <div class="text-muted small">Correction Vulnérabilité</div>
+                <div class="fw-bold text-dark">@(Model.DateVulnerabilityFixed.HasValue ? Model.DateVulnerabilityFixed.Value.ToString("dd/MM/yyyy HH:mm") : "-")</div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="p-2 border rounded bg-light">
+                <div class="text-muted small">Clôture du Ticket</div>
+                <div class="fw-bold text-dark">@(Model.DateClosed.HasValue ? Model.DateClosed.Value.ToString("dd/MM/yyyy HH:mm") : "-")</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remediation & Follow-up Notes -->
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase text-secondary small mb-2"><i class="bi bi-tools me-1"></i> Consignes de Remédiation CI-CERT</h6>
+        <div class="p-3 bg-light rounded border text-dark font-monospace small">
+            @Model.RemediationSteps
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h6 class="fw-bold text-uppercase text-secondary small mb-2"><i class="bi bi-journal-text me-1"></i> Historique des Notes d'Analyse & Suivi</h6>
+        <div class="p-3 bg-white rounded border text-secondary small" style="white-space: pre-wrap;">
+            @Model.FollowUpNotes
+        </div>
+    </div>
+
+    <!-- Quick Workflow Action Form -->
+    <form asp-controller="Incidents" asp-action="UpdateStatus" method="post" class="p-3 rounded border bg-light">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <h6 class="fw-bold text-uppercase text-dark small mb-3"><i class="bi bi-gear-fill me-1"></i> Mettre à jour le Statut du Ticket RTIR</h6>
+        <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="Détecté" selected="@(Model.Status == "Détecté")">Détecté</option>
+                    <option value="Qualifié" selected="@(Model.Status == "Qualifié")">Qualifié</option>
+                    <option value="Notifié" selected="@(Model.Status == "Notifié")">Notifié (Envoyer Courriel)</option>
+                    <option value="Résolu" selected="@(Model.Status == "Résolu")">Résolu (Correctif Appliqué)</option>
+                    <option value="Clos" selected="@(Model.Status == "Clos")">Clos (Audit Validé)</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="notes" class="form-control form-control-sm" placeholder="Ajouter une note de suivi d'analyse..." />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-sm btn-gov-primary w-100">Enregistrer</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer bg-light">
+    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+</div>

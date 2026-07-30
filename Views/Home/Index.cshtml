@@ -1,0 +1,236 @@
+@model CICertSOAR.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Tableau de Bord Exécutif";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 mb-1 fw-bold text-dark"><i class="bi bi-speedometer2 text-primary me-2"></i>Tableau de Bord Exécutif CI-CERT</h1>
+        <p class="text-muted mb-0">Vue synthétique nationale de la posture de sécurité et des incidents par secteur & ministère</p>
+    </div>
+    <div>
+        <a asp-controller="Reports" asp-action="Index" class="btn btn-gov-primary shadow-sm">
+            <i class="bi bi-file-earmark-pdf me-2"></i>Générer Rapport Exécutif
+        </a>
+    </div>
+</div>
+
+<!-- 1. Executive KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-total">
+            <div class="kpi-title">Total Incidents Détectés</div>
+            <div class="kpi-value">@Model.TotalIncidents</div>
+            <div class="kpi-subtitle"><i class="bi bi-server me-1"></i>Sur @Model.TotalAssets actifs répertoriés</div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-untreated">
+            <div class="kpi-title">Incidents Non Traités</div>
+            <div class="kpi-value text-danger">@Model.UntreatedIncidents</div>
+            <div class="kpi-subtitle"><span class="badge bg-danger">Action requise</span> Détectés, Qualifiés ou Notifiés</div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-treated">
+            <div class="kpi-title">Incidents Traités</div>
+            <div class="kpi-value text-success">@Model.TreatedIncidents</div>
+            <div class="kpi-subtitle"><span class="badge bg-success">Résolus / Clos</span> Correction validée</div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-rate">
+            <div class="kpi-title">Taux de Résolution National</div>
+            <div class="kpi-value text-primary">@Model.ResolutionRatePercentage %</div>
+            <div class="kpi-subtitle"><i class="bi bi-building me-1"></i>Sur @Model.TotalOrganizations organismes d'État</div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Charts Section -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Incidents par Secteur d'Activité</h5>
+                <span class="badge bg-light text-dark">Traité vs Non Traité</span>
+            </div>
+            <div class="card-body p-4">
+                <canvas id="sectorChart" height="260"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i>Incidents par Ministère de Rattachement</h5>
+                <span class="badge bg-light text-dark">Gouvernement</span>
+            </div>
+            <div class="card-body p-4">
+                <canvas id="ministryChart" height="260"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Vulnerability Rankings & Recent Critical Incidents -->
+<div class="row g-4 mb-4">
+    <!-- Ranking Sectors & Ministries -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-header bg-dark text-white py-3">
+                <h5 class="card-title mb-0 fw-bold"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Classement des Entités les plus Vulnérables</h5>
+            </div>
+            <div class="card-body p-4">
+                <h6 class="fw-bold text-uppercase text-secondary small mb-3">Ministères les Plus Impactés</h6>
+                <div class="list-group list-group-flush mb-4">
+                    @foreach (var min in Model.MostVulnerableMinistriesRanked)
+                    {
+                        <div class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center border-bottom">
+                            <div>
+                                <div class="fw-bold text-dark">@min.Label</div>
+                                <div class="small text-muted">Total: @min.TotalCount incident(s)</div>
+                            </div>
+                            <div>
+                                <span class="badge bg-danger me-1">@min.UntreatedCount Non Traité(s)</span>
+                                <span class="badge bg-success">@min.TreatedCount Traité(s)</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <h6 class="fw-bold text-uppercase text-secondary small mb-3">Secteurs Critiques les Plus Impactés</h6>
+                <div class="list-group list-group-flush">
+                    @foreach (var sec in Model.MostVulnerableSectorsRanked)
+                    {
+                        <div class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center border-bottom">
+                            <div>
+                                <div class="fw-bold text-dark">@sec.Label</div>
+                                <div class="small text-muted">Total: @sec.TotalCount incident(s)</div>
+                            </div>
+                            <div>
+                                <span class="badge bg-warning text-dark me-1">@sec.UntreatedCount Non Traité(s)</span>
+                                <span class="badge bg-success">@sec.TreatedCount Traité(s)</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Critical Alerts -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold"><i class="bi bi-bell-fill text-danger me-2"></i>Derniers Incidents Critiques & Hautes</h5>
+                <a asp-controller="Incidents" asp-action="Index" class="btn btn-sm btn-outline-dark">Voir Tous les Incidents</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Ticket RTIR</th>
+                                <th>Actif & Organisme</th>
+                                <th>Vulnérabilité (CVE)</th>
+                                <th>Sévérité</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var inc in Model.RecentCriticalIncidents)
+                            {
+                                <tr>
+                                    <td><span class="fw-bold text-dark">@inc.TicketNumber</span></td>
+                                    <td>
+                                        <div class="fw-bold text-dark">@(inc.Asset?.Name ?? "N/A")</div>
+                                        <div class="small text-muted">@(inc.Asset?.Organization?.Name ?? "N/A")</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">@(inc.Vulnerability?.CveId ?? "N/A")</span>
+                                        <div class="small text-truncate" style="max-width: 180px;">@(inc.Vulnerability?.Title ?? "N/A")</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-severity @inc.Severity">@inc.Severity</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status @inc.Status">@inc.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Sector Chart
+            const sectorCtx = document.getElementById('sectorChart').getContext('2d');
+            const sectorData = {
+                labels: @Html.Raw(Json.Serialize(Model.IncidentsBySector.Select(s => s.Label))),
+                datasets: [
+                    {
+                        label: 'Incidents Non Traités',
+                        data: @Html.Raw(Json.Serialize(Model.IncidentsBySector.Select(s => s.UntreatedCount))),
+                        backgroundColor: '#dc2626'
+                    },
+                    {
+                        label: 'Incidents Traités',
+                        data: @Html.Raw(Json.Serialize(Model.IncidentsBySector.Select(s => s.TreatedCount))),
+                        backgroundColor: '#16a34a'
+                    }
+                ]
+            };
+            new Chart(sectorCtx, {
+                type: 'bar',
+                data: sectorData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Ministry Chart
+            const ministryCtx = document.getElementById('ministryChart').getContext('2d');
+            const ministryData = {
+                labels: @Html.Raw(Json.Serialize(Model.IncidentsByMinistry.Select(m => m.Label))),
+                datasets: [
+                    {
+                        label: 'Incidents Non Traités',
+                        data: @Html.Raw(Json.Serialize(Model.IncidentsByMinistry.Select(m => m.UntreatedCount))),
+                        backgroundColor: '#ea580c'
+                    },
+                    {
+                        label: 'Incidents Traités',
+                        data: @Html.Raw(Json.Serialize(Model.IncidentsByMinistry.Select(m => m.TreatedCount))),
+                        backgroundColor: '#0284c7'
+                    }
+                ]
+            };
+            new Chart(ministryCtx, {
+                type: 'bar',
+                data: ministryData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, beginAtZero: true },
+                        y: { stacked: true }
+                    }
+                }
+            });
+        });
+    </script>
+}

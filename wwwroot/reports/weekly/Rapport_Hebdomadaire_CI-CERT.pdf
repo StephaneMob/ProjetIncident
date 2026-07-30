@@ -1,0 +1,41 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>Rapport d'Orchestration des Incidents - CI-CERT</title>
+<style>
+body { font-family: 'Calibri', sans-serif; margin: 40px; color: #1e293b; }
+h1 { color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 8px; }
+h2 { color: #334155; margin-top: 25px; }
+.kpi-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; font-size: 11pt; }
+th { background-color: #0f172a; color: #ffffff; }
+tr:nth-child(even) { background-color: #f1f5f9; }
+.critique { color: #dc2626; font-weight: bold; }
+.badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+</style></head><body>
+<h1>RÉPUBLIQUE DE CÔTE D'IVOIRE</h1>
+<p style='font-size: 14pt; color: #64748b;'><strong>ANSSI - CI-CERT</strong> | Centre National de Veille et de Réponse aux Incidents</p>
+<p style='font-size: 10pt; color: #94a3b8;'>Généré automatiquement le 30/07/2026 à 15:56 (TLP:AMBER)</p>
+<hr/>
+<h2>1. Synthèse Exécutive Ministérielle</h2>
+<div class='kpi-box'>
+<p><strong>Total d'incidents recensés :</strong> 5</p>
+<p><strong>Incidents non traités (En cours) :</strong> 3</p>
+<p><strong>Incidents résolus / clos :</strong> 2</p>
+<p><strong>Taux de résolution national :</strong> 40%</p>
+</div>
+<h2>2. Classement des Ministères & Secteurs les plus Vulnérables</h2>
+<table><tr><th>Rang</th><th>Ministère / Organisme</th><th>Total Incidents</th><th>En cours</th><th>Résolus</th></tr>
+<tr><td>1</td><td>Ministère de la Transition Numérique et de la Digitalisation</td><td>2</td><td class='critique'>1</td><td>1</td></tr>
+<tr><td>2</td><td>Ministère de l'Économie, des Finances et du Budget</td><td>2</td><td class='critique'>1</td><td>1</td></tr>
+<tr><td>3</td><td>Ministère de la Santé et de l'Hygiène Publique</td><td>1</td><td class='critique'>1</td><td>0</td></tr>
+</table>
+<h2>3. Détail Complet des Incidents de Sécurité (SOAR/RTIR)</h2>
+<table><tr><th>Ticket RTIR</th><th>Date Détection</th><th>Actif & Organisme</th><th>Vulnérabilité (CVE)</th><th>Sévérité</th><th>Statut</th></tr>
+<tr><td><strong>RTIR-2026-0432</strong></td><td>29/07/2026</td><td>Base de Données Registre Médical Central<br/><small>CHU d'Angré / Plateforme Hospitalière</small></td><td>CVE-2025-4911</td><td>Moyenne</td><td>Détecté</td></tr>
+<tr><td><strong>RTIR-2026-0429</strong></td><td>26/07/2026</td><td>Passerelle Fiscale Télédéclaration e-Impots<br/><small>DGI - Direction Générale des Impôts</small></td><td>CVE-2026-0812</td><td>Critique</td><td>Qualifié</td></tr>
+<tr><td><strong>RTIR-2026-0428</strong></td><td>21/07/2026</td><td>Portail Officiel du Gouvernement<br/><small>ANSSI - Agence Nationale de la Sécurité des Systèmes d'Information</small></td><td>CVE-2026-1048</td><td>Critique</td><td>Notifié</td></tr>
+<tr><td><strong>RTIR-2026-0431</strong></td><td>18/07/2026</td><td>Cœur de Réseau National de Fibre Optique<br/><small>ANSUT - Agence Nationale du Service Universel des Télécommunications</small></td><td>CVE-2025-2140</td><td>Haute</td><td>Résolu</td></tr>
+<tr><td><strong>RTIR-2026-0430</strong></td><td>10/07/2026</td><td>Système Central de Paiement TrésorPay<br/><small>Direction Générale du Trésor et de la Comptabilité Publique</small></td><td>CVE-2024-44228</td><td>Critique</td><td>Clos</td></tr>
+</table>
+<br/><br/><p style='text-align: center; font-size: 9pt; color: #94a3b8;'>Document Officiel - Direction Générale de l'ANSSI / CI-CERT</p>
+</body></html>

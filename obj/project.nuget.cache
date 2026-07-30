@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "dgSpecHash": "gEBq+ZMo6GU=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\steph\\OneDrive\\Documents\\Stage ANSSI\\Projet Incident\\CICertSOAR.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\steph\\.nuget\\packages\\microsoft.entityframeworkcore\\10.0.10\\microsoft.entityframeworkcore.10.0.10.nupkg.sha512",
+    "C:\\Users\\steph\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\10.0.10\\microsoft.entityframeworkcore.abstractions.10.0.10.nupkg.sha512",
+    "C:\\Users\\steph\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.10\\microsoft.entityframeworkcore.analyzers.10.0.10.nupkg.sha512",
+    "C:\\Users\\steph\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\10.0.10\\microsoft.entityframeworkcore.inmemory.10.0.10.nupkg.sha512",
+    "C:\\Users\\steph\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.4\\microsoft.entityframeworkcore.relational.10.0.4.nupkg.sha512",
+    "C:\\Users\\steph\\.nuget\\packages\\npgsql\\10.0.3\\npgsql.10.0.3.nupkg.sha512",
+    "C:\\Users\\steph\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\10.0.3\\npgsql.entityframeworkcore.postgresql.10.0.3.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Une erreur s’est produite lors de l’obtention des données de vulnérabilité du package\u00A0: Impossible de charger l'index de service pour la source https://api.nuget.org/v3/index.json.",
+      "projectPath": "C:\\Users\\steph\\OneDrive\\Documents\\Stage ANSSI\\Projet Incident\\CICertSOAR.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\steph\\OneDrive\\Documents\\Stage ANSSI\\Projet Incident\\CICertSOAR.csproj",
+      "targetGraphs": []
+    }
+  ]
+}

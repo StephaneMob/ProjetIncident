@@ -1,0 +1,172 @@
+@model CICertSOAR.Services.PaginatedList<CICertSOAR.Models.Asset>
+
+@{
+    ViewData["Title"] = "Référentiel des Actifs Numériques (CMDB)";
+    var sectors = ViewBag.Sectors as List<CICertSOAR.Models.Sector> ?? new();
+    var ministries = ViewBag.Ministries as List<CICertSOAR.Models.Ministry> ?? new();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 mb-1 fw-bold text-dark"><i class="bi bi-server text-primary me-2"></i>Référentiel des Actifs Numériques (CMDB)</h1>
+        <p class="text-muted mb-0">Inventaire centralisé national des actifs, adresses IP, domaines et contacts de notification</p>
+    </div>
+</div>
+
+<!-- Filter Card -->
+<div class="filter-card">
+    <form method="get" asp-controller="Assets" asp-action="Index" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Moteur de Recherche</label>
+            <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Nom d'actif, IP, Domaine..." value="@ViewBag.Search" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Criticité</label>
+            <select name="criticality" class="form-select form-select-sm">
+                <option value="">Toutes criticités</option>
+                <option value="Critique" selected="@(ViewBag.SelectedCriticality == "Critique")">Critique</option>
+                <option value="Haute" selected="@(ViewBag.SelectedCriticality == "Haute")">Haute</option>
+                <option value="Moyenne" selected="@(ViewBag.SelectedCriticality == "Moyenne")">Moyenne</option>
+                <option value="Basse" selected="@(ViewBag.SelectedCriticality == "Basse")">Basse</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Type d'Actif</label>
+            <select name="type" class="form-select form-select-sm">
+                <option value="">Tous les types</option>
+                <option value="Web" selected="@(ViewBag.SelectedType == "Web")">Web</option>
+                <option value="Database" selected="@(ViewBag.SelectedType == "Database")">Database</option>
+                <option value="Infrastructure" selected="@(ViewBag.SelectedType == "Infrastructure")">Infrastructure</option>
+                <option value="API" selected="@(ViewBag.SelectedType == "API")">API</option>
+                <option value="Email" selected="@(ViewBag.SelectedType == "Email")">Email</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-bold text-uppercase text-secondary">Secteur</label>
+            <select name="sectorId" class="form-select form-select-sm">
+                <option value="">Tous les secteurs</option>
+                @foreach (var sec in sectors)
+                {
+                    <option value="@sec.Id" selected="@(ViewBag.SelectedSectorId == sec.Id)">@sec.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-sm btn-gov-primary w-100"><i class="bi bi-funnel me-1"></i> Filtrer</button>
+            <a asp-controller="Assets" asp-action="Index" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i></a>
+        </div>
+    </form>
+</div>
+
+<!-- Main Table -->
+<div class="table-responsive mb-3">
+    <table class="table table-custom align-middle">
+        <thead>
+            <tr>
+                <th>Nom de l'Actif Numérique</th>
+                <th>Adresse IP / Domaine</th>
+                <th>Type</th>
+                <th>Criticité</th>
+                <th>Organisme & Ministère</th>
+                <th>Secteur d'Activité</th>
+                <th>Date d'Enregistrement</th>
+                <th class="text-end">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Items.Any())
+            {
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                        <i class="bi bi-hdd-network fs-3 d-block mb-2"></i>
+                        Aucun actif numérique trouvé dans la CMDB.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var asset in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-dark">@asset.Name</div>
+                            <small class="text-muted">ID Actif: #@asset.Id</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold"><code class="bg-light px-2 py-1 rounded text-primary">@asset.IpAddress</code></div>
+                            <small class="text-muted">@asset.Domain</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">@asset.Type</span>
+                        </td>
+                        <td>
+                            <span class="badge-severity @asset.Criticality">@asset.Criticality</span>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-primary">@(asset.Organization?.Name ?? "N/A")</div>
+                            <div class="small text-muted">@(asset.Organization?.Ministry?.Name ?? "N/A")</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">@(asset.Organization?.Ministry?.Sector?.Name ?? "N/A")</span>
+                        </td>
+                        <td>
+                            <div class="small text-dark">@asset.DateRegistered.ToString("dd/MM/yyyy")</div>
+                        </td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-sm btn-gov-outline" onclick="openAssetDetails(@asset.Id)">
+                                <i class="bi bi-info-circle me-1"></i> Fiche CMDB
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Controls -->
+<div class="d-flex justify-content-between align-items-center">
+    <div class="small text-muted">
+        Affichage de <strong>@Model.Items.Count</strong> actif(s) sur un total de <strong>@Model.TotalCount</strong> répertorié(s).
+    </div>
+    <nav>
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                <a class="page-link" asp-controller="Assets" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" asp-route-search="@ViewBag.Search" asp-route-criticality="@ViewBag.SelectedCriticality" asp-route-type="@ViewBag.SelectedType" asp-route-sectorId="@ViewBag.SelectedSectorId">Précédent</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" asp-controller="Assets" asp-action="Index" asp-route-page="@i" asp-route-search="@ViewBag.Search" asp-route-criticality="@ViewBag.SelectedCriticality" asp-route-type="@ViewBag.SelectedType" asp-route-sectorId="@ViewBag.SelectedSectorId">@i</a>
+                </li>
+            }
+            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                <a class="page-link" asp-controller="Assets" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" asp-route-search="@ViewBag.Search" asp-route-criticality="@ViewBag.SelectedCriticality" asp-route-type="@ViewBag.SelectedType" asp-route-sectorId="@ViewBag.SelectedSectorId">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Modal Container for Details -->
+<div class="modal fade" id="assetModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" id="assetModalContent">
+            <!-- Loaded dynamically via AJAX -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openAssetDetails(id) {
+            $.get('@Url.Action("Details", "Assets")/' + id, function (data) {
+                $('#assetModalContent').html(data);
+                var modal = new bootstrap.Modal(document.getElementById('assetModal'));
+                modal.show();
+            });
+        }
+    </script>
+}

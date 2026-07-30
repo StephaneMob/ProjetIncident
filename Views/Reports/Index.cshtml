@@ -1,0 +1,122 @@
+@model CICertSOAR.Models.ReportFilterViewModel
+
+@{
+    ViewData["Title"] = "Centre de Reporting & Exportation";
+    var sectors = ViewBag.Sectors as List<CICertSOAR.Models.Sector> ?? new();
+    var ministries = ViewBag.Ministries as List<CICertSOAR.Models.Ministry> ?? new();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 mb-1 fw-bold text-dark"><i class="bi bi-file-earmark-bar-graph-fill text-primary me-2"></i>Centre de Reporting & Exportation</h1>
+        <p class="text-muted mb-0">Génération automatique des rapports hebdomadaires et exports personnalisés au format CSV, Word ou PDF</p>
+    </div>
+</div>
+
+<!-- 1. Automated Weekly Report Banner -->
+<div class="card border-0 shadow-sm rounded-3 mb-4 text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-left: 5px solid #ea580c !important;">
+    <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-warning text-dark font-monospace">AUTOMATISATION 07H00</span>
+                <span class="badge bg-success">Prêt au téléchargement</span>
+            </div>
+            <h4 class="fw-bold mb-1"><i class="bi bi-calendar-check me-2 text-warning"></i>Rapport Hebdomadaire National de Sécurité</h4>
+            <p class="mb-0 text-slate-300 small" style="color: #cbd5e1;">Généré automatiquement tous les lundis à 07h00. Résumé officiel destiné à la Direction ANSSI et aux Ministres.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Reports" asp-action="DownloadWeeklyReport" asp-route-format="PDF" class="btn btn-warning fw-bold">
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i> Télécharger PDF (Hebdo)
+            </a>
+            <a asp-controller="Reports" asp-action="DownloadWeeklyReport" asp-route-format="WORD" class="btn btn-light fw-bold">
+                <i class="bi bi-file-earmark-word-fill me-1 text-primary"></i> Word
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Custom Report Generator -->
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-header bg-white border-bottom py-3">
+        <h5 class="card-title mb-0 fw-bold"><i class="bi bi-sliders text-primary me-2"></i>Générateur de Rapports Personnalisés</h5>
+    </div>
+    <div class="card-body p-4">
+        <form asp-controller="Reports" asp-action="Export" method="post">
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-uppercase text-secondary">Date de Début</label>
+                    <input type="date" asp-for="StartDate" class="form-control" value="@DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-uppercase text-secondary">Date de Fin</label>
+                    <input type="date" asp-for="EndDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-uppercase text-secondary">Filtre par Secteur</label>
+                    <select asp-for="SectorId" class="form-select">
+                        <option value="">Tous les secteurs d'activité</option>
+                        @foreach (var sec in sectors)
+                        {
+                            <option value="@sec.Id">@sec.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-uppercase text-secondary">Filtre par Ministère</label>
+                    <select asp-for="MinistryId" class="form-select">
+                        <option value="">Tous les ministères</option>
+                        @foreach (var min in ministries)
+                        {
+                            <option value="@min.Id">@min.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-uppercase text-secondary">Statut de l'Incident</label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="">Tous les statuts (Détectés, Notifiés, Résolus, Clos)</option>
+                        <option value="Détecté">Détecté</option>
+                        <option value="Qualifié">Qualifié</option>
+                        <option value="Notifié">Notifié</option>
+                        <option value="Résolu">Résolu</option>
+                        <option value="Clos">Clos</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-uppercase text-secondary">Format d'Exportation Souhaité</label>
+                    <div class="d-flex gap-4 pt-1">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Format" id="formatPdf" value="PDF" checked>
+                            <label class="form-check-label fw-bold text-dark" for="formatPdf">
+                                <i class="bi bi-file-earmark-pdf text-danger fs-5 me-1"></i> PDF Officiel (.pdf)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Format" id="formatWord" value="WORD">
+                            <label class="form-check-label fw-bold text-dark" for="formatWord">
+                                <i class="bi bi-file-earmark-word text-primary fs-5 me-1"></i> Document Word (.doc)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Format" id="formatCsv" value="CSV">
+                            <label class="form-check-label fw-bold text-dark" for="formatCsv">
+                                <i class="bi bi-file-earmark-spreadsheet text-success fs-5 me-1"></i> Fichier CSV (.csv)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-gov-primary px-4 py-2">
+                    <i class="bi bi-download me-2"></i>Générer et Télécharger le Rapport
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
